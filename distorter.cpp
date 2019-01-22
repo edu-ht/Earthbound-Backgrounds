@@ -76,7 +76,7 @@ volatile int game_time = 0;
 void game_timer() {
 	game_time++;
 }
-END_OF_FUNCTION(game_timer)
+//END_OF_FUNCTION(game_timer)
 
 volatile int fps = 0;
 volatile int frame_count = 0;
@@ -85,7 +85,7 @@ void fps_timer()
 	fps = frame_count;
 	frame_count = 0;
 }
-END_OF_FUNCTION(fps_timer)
+//END_OF_FUNCTION(fps_timer)
 
 
 /*
@@ -165,4 +165,4 @@ int main(int argc, char** argv)
 
 	return 0;
 }
-END_OF_MAIN()
+//END_OF_MAIN()
