@@ -51,16 +51,18 @@ void distort_frame(ALLEGRO_BITMAP *src, int t, int type)
         src_y = (src_y + height) % height;
 
         // Copy the line into the destination with translation
-        for (int x = 0; x < width; x++)
-        {
-            // Also need to wrap the x offset
-            src_x = (src_x + width) % width;
-            //dstdata[y * width + x] = srcdata[src_y * width + src_x];
+        // for (int x = 0; x < width; x++)
+        // {
+        //     // Also need to wrap the x offset
+        //     src_x = (src_x + width) % width;
+        //     //dstdata[y * width + x] = srcdata[src_y * width + src_x];
 
-            al_draw_pixel(x, y, al_get_pixel(src, src_x, src_y));
+        //     al_draw_pixel(x, y, al_get_pixel(src, src_x, src_y));
 
-            src_x++;
-        }
+        //     src_x++;
+        // }
+        src_x = (src_x + width) % width;
+        al_draw_bitmap_region(src, src_x, src_y, width, height, 0, y, 0);
     }
 }
 
@@ -83,6 +85,8 @@ int main(int argc, char **argv)
     // Load bitmap
     ALLEGRO_BITMAP *bg1 = al_load_bitmap("bg.bmp");
 
+    int mode = 0;
+
     // Main loop
     while(!doexit)
     {
@@ -94,11 +98,20 @@ int main(int argc, char **argv)
                 case ALLEGRO_KEY_ESCAPE:
                     doexit = true;
                     break;
+                case ALLEGRO_KEY_0:
+                    mode = 0;
+                    break;
+                case ALLEGRO_KEY_1:
+                    mode = 1;
+                    break;
+                case ALLEGRO_KEY_2:
+                    mode = 2;
+                    break;
             }
         }
 
         //al_draw_bitmap(bg1, 0, 0, 0);
-        distort_frame(bg1, t, 1);
+        distort_frame(bg1, t, mode);
         al_flip_display();
         t++;
     }
