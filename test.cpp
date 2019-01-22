@@ -24,10 +24,6 @@ void distort_frame(ALLEGRO_BITMAP *src, int t, int type)
     float S = 0.1;  // Time scaling
     float C = 1.0;  // Compression (only used for vertical distortion)
 
-    // Get pointers to raw bitmap data
-    //int *srcdata = (int *)src->line[0];
-    //int *dstdata = (int *)dst->line[0];
-
     int width = al_get_bitmap_width(src);
     int height = al_get_bitmap_height(src);
 
@@ -47,22 +43,13 @@ void distort_frame(ALLEGRO_BITMAP *src, int t, int type)
         else if (type == 2)
             src_y = y * C + offset;
 
-        // Wrap the y offset correctly - e.g., -1 should become height-1
+        // Wrap the x and y offset correctly - e.g., -1 should become height-1
         src_y = (src_y + height) % height;
+        //src_x = (src_x) % width;
 
-        // Copy the line into the destination with translation
-        // for (int x = 0; x < width; x++)
-        // {
-        //     // Also need to wrap the x offset
-        //     src_x = (src_x + width) % width;
-        //     //dstdata[y * width + x] = srcdata[src_y * width + src_x];
-
-        //     al_draw_pixel(x, y, al_get_pixel(src, src_x, src_y));
-
-        //     src_x++;
-        // }
-        src_x = (src_x + width) % width;
-        al_draw_bitmap_region(src, src_x, src_y, width, height, 0, y, 0);
+        // Draw shifted line
+        al_draw_bitmap_region(src, src_x, src_y, width, 1, 0, y, 0);
+        al_draw_bitmap_region(src, src_x, src_y, width, 1, 0, y, 0);
     }
 }
 
