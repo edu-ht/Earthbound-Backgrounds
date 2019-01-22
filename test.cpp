@@ -15,11 +15,11 @@
  *  be the same bitmap.
  */
 //void distort_frame(ALLEGRO_BITMAP *src, ALLEGRO_BITMAP *dst, int t, int type)
-void distort_frame(ALLEGRO_BITMAP *src, int t, int type)
+void distort_frame(ALLEGRO_BITMAP *src, int t, int type, float amplitude)
 {
 
     // Some hard-coded distortion parameters
-    float A = 16.0; // Amplitude
+    float A = amplitude; // Amplitude
     float F = 0.1;  // Frequency
     float S = 0.1;  // Time scaling
     float C = 1.0;  // Compression (only used for vertical distortion)
@@ -45,11 +45,18 @@ void distort_frame(ALLEGRO_BITMAP *src, int t, int type)
 
         // Wrap the x and y offset correctly - e.g., -1 should become height-1
         src_y = (src_y + height) % height;
-        //src_x = (src_x) % width;
+
 
         // Draw shifted line
-        al_draw_bitmap_region(src, src_x, src_y, width, 1, 0, y, 0);
-        al_draw_bitmap_region(src, src_x, src_y, width, 1, 0, y, 0);
+        if (src_x < 0) {
+            al_draw_bitmap_region(src, src_x      , src_y, width , 1, 0          , y, 0);
+            al_draw_bitmap_region(src, src_x+width, src_y, -src_x, 1, 0          , y, 0);
+        }
+        else
+        {
+            al_draw_bitmap_region(src, src_x      , src_y, width , 1, 0          , y, 0);
+            al_draw_bitmap_region(src, 0          , src_y, src_x , 1, width-src_x, y, 0);
+        }
     }
 }
 
@@ -73,32 +80,39 @@ int main(int argc, char **argv)
     ALLEGRO_BITMAP *bg1 = al_load_bitmap("bg.bmp");
 
     int mode = 0;
+    float amplitude = 16.0;
 
     // Main loop
     while(!doexit)
     {
         al_get_next_event(event_queue, &ev);
-        if (ev.type == ALLEGRO_EVENT_KEY_UP)
+        if (ev.type == ALLEGRO_EVENT_KEY_DOWN)
         {
             switch(ev.keyboard.keycode)
             {
                 case ALLEGRO_KEY_ESCAPE:
                     doexit = true;
                     break;
-                case ALLEGRO_KEY_0:
+                case ALLEGRO_KEY_1:
                     mode = 0;
                     break;
-                case ALLEGRO_KEY_1:
+                case ALLEGRO_KEY_2:
                     mode = 1;
                     break;
-                case ALLEGRO_KEY_2:
+                case ALLEGRO_KEY_3:
                     mode = 2;
+                    break;
+                case ALLEGRO_KEY_UP:
+                    amplitude++;
+                    break;
+                case ALLEGRO_KEY_DOWN:
+                    amplitude--;
                     break;
             }
         }
 
         //al_draw_bitmap(bg1, 0, 0, 0);
-        distort_frame(bg1, t, mode);
+        distort_frame(bg1, t, mode, amplitude);
         al_flip_display();
         t++;
     }
