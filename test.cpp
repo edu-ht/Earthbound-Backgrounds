@@ -1,5 +1,6 @@
 #include <allegro5/allegro.h>
 #include <allegro5/allegro_image.h>
+#include <allegro5/allegro_native_dialog.h>
 #include <stdio.h>
 #include <math.h>
 
@@ -65,10 +66,13 @@ int main(int argc, char **argv)
     al_init();
     al_init_image_addon();
     al_install_keyboard();
+    al_init_native_dialog_addon();
     int t = 0;
 
     // Create new display
-    ALLEGRO_DISPLAY *display = al_create_display(255,255);
+    ALLEGRO_DISPLAY *display = NULL;
+    al_set_new_display_flags(ALLEGRO_GTK_TOPLEVEL);
+    display = al_create_display(255, 255);
 
     // Keyboard
     ALLEGRO_EVENT_QUEUE *event_queue = al_create_event_queue();
